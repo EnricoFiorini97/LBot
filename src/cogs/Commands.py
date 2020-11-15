@@ -35,7 +35,7 @@ class my_commands(commands.Cog):
               ]
         await ctx.send(random.choice(ans) + ", " + ctx.message.author.mention)
 
-    @commands.command(name = "upload",brief = "Upload files")
+    @commands.command(name = "upload", brief = "Upload files")
     async def upload(self,ctx,*,args = None):
         if not args:    
             await ctx.send("Command syntax: upload <file>")
@@ -46,7 +46,8 @@ class my_commands(commands.Cog):
         
     @commands.command(name = "download", brief = "Download file")
     async def download(self,ctx,*,args = None):
-        if not args:    await ctx.send("Command syntax: download <file>")
+        if not args:    
+            await ctx.send("Command syntax: download <file>")
         try:
             file_name = args.split(r"/")[-1]
             open(str(Path(os.getcwd()).parent) + os.path.sep + "file" + os.path.sep + file_name,"wb").write(requests.get(args).content)
@@ -109,7 +110,6 @@ class my_commands(commands.Cog):
     async def rmrole(self, ctx, member : discord.Member, role : discord.Role):  
         await member.remove_roles(role)
 
-
     @commands.command()
     @commands.has_role("mod")
     async def createrole(self, ctx, role):
@@ -122,7 +122,7 @@ class my_commands(commands.Cog):
 
     @commands.command()
     @commands.has_role("mod")
-    async def populaterole(self, ctx, role: discord.Role):
+    async def setuprole(self, ctx, role: discord.Role):
         await ctx.send("Work in progress...")
 
 def setup(client):
