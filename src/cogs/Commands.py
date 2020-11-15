@@ -13,7 +13,7 @@ import requests
 import sys
 
 class my_commands(commands.Cog):
-    def __init__(self,client):
+    def __init__(self, client):
         self.client = client
 
     @commands.command(name = "ping", brief = "Return latency")
@@ -25,7 +25,7 @@ class my_commands(commands.Cog):
         await ctx.send(ctx.message.author.mention + " is gay!")
 
     @commands.command(name = "8ball", aliases = ["eight_ball", "eightball", "8-ball"], pass_context = True, brief = "Random answer to a question")
-    async def eight_ball(self,ctx):
+    async def eight_ball(self, ctx):
         ans = [
               "That is a resounding no",
               "It is not looking likely",
@@ -37,9 +37,10 @@ class my_commands(commands.Cog):
 
     @commands.command(name = "upload",brief = "Upload files")
     async def upload(self,ctx,*,args = None):
-        if not args:    await ctx.send("Command syntax: upload <file>")
+        if not args:    
+            await ctx.send("Command syntax: upload <file>")
         try:
-            await ctx.send(file = discord.File (str(Path(os.getcwd()).parent) + os.path.sep + "File" + os.path.sep + args))
+            await ctx.send(file = discord.File(str(Path(os.getcwd()).parent) + os.path.sep + "file" + os.path.sep + args))
         except IOError:
             await ctx.send("Upload failed!")
         
@@ -63,30 +64,29 @@ class my_commands(commands.Cog):
             await ctx.send("Bitcoin price is: $" + response["bpi"]["USD"]["rate"])
         
     @commands.command(name = "shutdown", brief = "Shutdown bot")
-    async def shutdown(self,ctx):
+    async def shutdown(self, ctx):
         await ctx.send("Shutdown completed!")
         sys.exit(0)
 
     @commands.command(brief = "Delete last X message")
-    async def clear(self,ctx,amount : str):
+    async def clear(self, ctx, amount : str):
         try:
             await ctx.channel.purge(limit = int(amount))
         except:
             await ctx.send("Command syntax: clear <number>")
 
     @commands.command(brief = "Kick user")
-    async def kick(self,ctx, member:discord.Member, *, reason = None):
+    async def kick(self,ctx, member : discord.Member, *, reason = None):
         await member.kick(reason = reason)
         await ctx.send(f"Kicked {member.mention}")
 
-
     @commands.command(brief = "Ban user")
-    async def ban(self,ctx, member:discord.Member, *, reason = None):
+    async def ban(self, ctx, member : discord.Member, *, reason = None):
         await member.ban(reason = reason)
         await ctx.send(f"Banned {member.mention}")
 
     @commands.command(brief = "Unban user")
-    async def unban(self,ctx, *, member):
+    async def unban(self, ctx, *, member):
         if not re.match("(.*)#(\d{4})",member):
             await ctx.send(f"Command syntax: unban <username>#<discriminator>")
             return
@@ -100,14 +100,30 @@ class my_commands(commands.Cog):
         await ctx.send(f"User not banned")
 
     @commands.command()
-    @has_permissions(manage_roles = True)
-    async def addrole(self,ctx,member:discord.Member,role:discord.Role):
+    @commands.has_role("mod")
+    async def addrole(self, ctx, member : discord.Member, role : discord.Role):
         await member.add_roles(role)
 
     @commands.command()
-    @has_permissions(manage_roles = True)
-    async def rmrole(self,ctx,member:discord.Member,role:discord.Role):
+    @commands.has_role("mod")
+    async def rmrole(self, ctx, member : discord.Member, role : discord.Role):  
         await member.remove_roles(role)
+
+
+    @commands.command()
+    @commands.has_role("mod")
+    async def createrole(self, ctx, role):
+        await ctx.guild.create_role(name = role)
+
+    @commands.command()
+    @commands.has_role("mod")
+    async def deleterole(self, ctx, role : discord.Role):
+        await role.delete()
+
+    @commands.command()
+    @commands.has_role("mod")
+    async def populaterole(self, ctx, role: discord.Role):
+        await ctx.send("Work in progress...")
 
 def setup(client):
     client.add_cog(my_commands(client))
