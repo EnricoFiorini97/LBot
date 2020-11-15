@@ -2,7 +2,7 @@ from io import IOBase
 import discord
 from discord import File
 from discord.ext import commands
-from discord.ext.commands import Bot
+from discord.ext.commands import Bot, has_permissions, CheckFailure
 import re
 import os
 import random 
@@ -86,7 +86,6 @@ class my_commands(commands.Cog):
         await ctx.send(f"Banned {member.mention}")
 
     @commands.command(brief = "Unban user")
-    #errore se banni gente che non è nel canale
     async def unban(self,ctx, *, member):
         if not re.match("(.*)#(\d{4})",member):
             await ctx.send(f"Command syntax: unban <username>#<discriminator>")
@@ -100,6 +99,15 @@ class my_commands(commands.Cog):
                 return
         await ctx.send(f"User not banned")
 
+    @commands.command()
+    @has_permissions(manage_roles = True)
+    async def addrole(self,ctx,member:discord.Member,role:discord.Role):
+        await member.add_roles(role)
+
+    @commands.command()
+    @has_permissions(manage_roles = True)
+    async def rmrole(self,ctx,member:discord.Member,role:discord.Role):
+        await member.remove_roles(role)
 
 def setup(client):
     client.add_cog(my_commands(client))
