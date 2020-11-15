@@ -67,7 +67,6 @@ class my_commands(commands.Cog):
         await ctx.send("Shutdown completed!")
         sys.exit(0)
 
-    #Delete last 10 message 
     @commands.command(brief = "Delete last X message")
     async def clear(self,ctx,amount : str):
         try:

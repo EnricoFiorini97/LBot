@@ -23,10 +23,16 @@ class my_events(commands.Cog):
     #Event command not found
     @commands.Cog.listener()
     async def on_command_error(self,ctx, error):
-        if "Member" and "not found" in str(error):
+        print(error)
+        if "Member" in str(error) and "not found" in str(error):
             await ctx.send("Error - User not found.")
-        elif "ExtensionNotLoaded" or "ExtensionNotFound" in str(error):
-            await ctx.send("Error - File not found.")
+
+        elif "ExtensionAlreadyLoaded" in str(error):
+            await ctx.send("Error - File alredy loaded.")
+
+        elif "ExtensionNotLoaded" in str(error) or "ExtensionNotFound" in str(error):
+            await ctx.send("Error - Command list don't exists.")
+
         else:
             await ctx.send("Error - Command not found. Run {}help.".format(ctx.prefix))
 
