@@ -23,8 +23,12 @@ class my_events(commands.Cog):
     #Event command not found
     @commands.Cog.listener()
     async def on_command_error(self,ctx, error):
-        print(error)
-        await ctx.send("Error - Command not found. Run {}help.".format(ctx.prefix))
+        if "Member" and "not found" in str(error):
+            await ctx.send("Error - User not found.")
+        elif "ExtensionNotLoaded" or "ExtensionNotFound" in str(error):
+            await ctx.send("Error - File not found.")
+        else:
+            await ctx.send("Error - Command not found. Run {}help.".format(ctx.prefix))
 
     #Member function, need channel
     @commands.Cog.listener()

@@ -13,20 +13,9 @@ class DBot():
     def config_loader(self):
         token_file_path = r"" + str(Path(os.getcwd()).parent) + os.path.sep + "config_files" + os.path.sep + "token.txt"
         
-        @self.client.command(description = "Load cog file")
-        async def load(ctx,extension):
-            self.client.load_extension(f"cogs.{extension}")
-
-        @self.client.command()
-        async def unload(ctx,extension):
-            self.client.unload_extension(f"cogs.{extension}")
-        
         for filename in os.listdir("./cogs"):
             if filename.endswith(".py"):
                 self.client.load_extension(f"cogs.{filename[:-3]}")
-        
-        
-
 
         self.client.run(open(token_file_path,"r").readline())
 

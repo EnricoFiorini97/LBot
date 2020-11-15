@@ -16,15 +16,15 @@ class my_commands(commands.Cog):
     def __init__(self,client):
         self.client = client
 
-    @commands.command(name = "ping", description = "Return latency")
+    @commands.command(name = "ping", brief = "Return latency")
     async def ping(self, ctx):
         await ctx.send(f"pong! {round (self.client.latency * 1000)}ms")
 
-    @commands.command(name = "gay", description = "Return sender is gay")
+    @commands.command(name = "gay", brief = "Return sender is gay")
     async def gay(self,ctx):
         await ctx.send(ctx.message.author.mention + " is gay!")
 
-    @commands.command(name = "8ball", aliases = ["eight_ball", "eightball", "8-ball"], pass_context = True, description = "Random answer to a question")
+    @commands.command(name = "8ball", aliases = ["eight_ball", "eightball", "8-ball"], pass_context = True, brief = "Random answer to a question")
     async def eight_ball(self,ctx):
         ans = [
               "That is a resounding no",
@@ -35,7 +35,7 @@ class my_commands(commands.Cog):
               ]
         await ctx.send(random.choice(ans) + ", " + ctx.message.author.mention)
 
-    @commands.command(name = "upload",description = "Upload files")
+    @commands.command(name = "upload",brief = "Upload files")
     async def upload(self,ctx,*,args = None):
         if not args:    await ctx.send("Command syntax: upload <file>")
         try:
@@ -43,7 +43,7 @@ class my_commands(commands.Cog):
         except IOError:
             await ctx.send("Upload failed!")
         
-    @commands.command(name = "download", description = "Download file")
+    @commands.command(name = "download", brief = "Download file")
     async def download(self,ctx,*,args = None):
         if not args:    await ctx.send("Command syntax: download <file>")
         try:
@@ -53,7 +53,7 @@ class my_commands(commands.Cog):
         except IOError:
             await ctx.send("Download failed")
 
-    @commands.command(name = "bitcoin", description = "Return actual price of Bitcoin")
+    @commands.command(name = "bitcoin", brief = "Return actual price of Bitcoin")
     async def bitcoin(self,ctx):
         url = "https://api.coindesk.com/v1/bpi/currentprice/BTC.json"
         async with aiohttp.ClientSession() as session:  # Async HTTP request
@@ -62,35 +62,31 @@ class my_commands(commands.Cog):
             response = json.loads(response)
             await ctx.send("Bitcoin price is: $" + response["bpi"]["USD"]["rate"])
         
-    @commands.command(name = "shutdown", description = "Shutdown bot")
+    @commands.command(name = "shutdown", brief = "Shutdown bot")
     async def shutdown(self,ctx):
         await ctx.send("Shutdown completed!")
         sys.exit(0)
 
     #Delete last 10 message 
-    @commands.command(description = "Delete last X message")
+    @commands.command(brief = "Delete last X message")
     async def clear(self,ctx,amount : str):
         try:
             await ctx.channel.purge(limit = int(amount))
         except:
             await ctx.send("Command syntax: clear <number>")
 
-    @commands.command(description = "Kick user")
+    @commands.command(brief = "Kick user")
     async def kick(self,ctx, member:discord.Member, *, reason = None):
         await member.kick(reason = reason)
         await ctx.send(f"Kicked {member.mention}")
-        #await ctx.send(f"User not in server!")
 
 
-    @commands.command(description = "Ban user")
-    async def ban(self,ctx, member, *, reason = None):
-        try:
-            await member.ban(reason = reason)
-            await ctx.send(f"Banned {member.mention}")
-        except:
-            await ctx.send(f"User not in server!")
+    @commands.command(brief = "Ban user")
+    async def ban(self,ctx, member:discord.Member, *, reason = None):
+        await member.ban(reason = reason)
+        await ctx.send(f"Banned {member.mention}")
 
-    @commands.command(description = "Unban user")
+    @commands.command(brief = "Unban user")
     #errore se banni gente che non è nel canale
     async def unban(self,ctx, *, member):
         if not re.match("(.*)#(\d{4})",member):
