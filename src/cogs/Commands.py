@@ -1,8 +1,8 @@
 from io import IOBase
 import discord
-from discord import File
+from discord import File, Permissions
 from discord.ext import commands
-from discord.ext.commands import Bot, has_permissions, CheckFailure
+from discord.ext.commands import Bot
 import re
 import os
 import random 
@@ -55,6 +55,7 @@ class my_commands(commands.Cog):
             await ctx.send("Download failed")
 
     @commands.command(name = "bitcoin", brief = "Return actual price of Bitcoin")
+    @commands.has_role("mod")
     async def bitcoin(self,ctx):
         url = "https://api.coindesk.com/v1/bpi/currentprice/BTC.json"
         async with aiohttp.ClientSession() as session:  # Async HTTP request
@@ -122,8 +123,20 @@ class my_commands(commands.Cog):
 
     @commands.command()
     @commands.has_role("mod")
-    async def populaterole(self, ctx, role: discord.Role):
-        await ctx.send("Work in progress...")
+    async def addpermission(self, ctx, role: discord.Role, single_permission):
+        perms = Permissions()
+        eval("perms.update(" + str(single_permission) +" = True)")
+        await role.edit(permissions = perms)
+        #print(getattr(role.permissions,"send_messages"))
+        await ctx.send("Permission table altered.")
+    
+    @commands.command()
+    @commands.has_role("mod")
+    async def rmpermission(self, ctx, role: discord.Role, single_permission):
+        perms = Permissions()
+        eval("perms.update(" + str(single_permission) +" = False)")
+        await role.edit(permissions = perms)
+        await ctx.send("Permission table altered.")
 
 def setup(client):
     client.add_cog(my_commands(client))
