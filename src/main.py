@@ -22,5 +22,6 @@ class DBot():
 def main():
     DBot("$")
 
-if __name__ == "__main__":  main()
+if __name__ == "__main__":  
+    main()
 

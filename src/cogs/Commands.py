@@ -35,7 +35,7 @@ class my_commands(commands.Cog):
               ]
         await ctx.send(random.choice(ans) + ", " + ctx.message.author.mention)
 
-    @commands.command(name = "upload",brief = "Upload files")
+    @commands.command(name = "upload", brief = "Upload files")
     async def upload(self,ctx,*,args = None):
         if not args:    
             await ctx.send("Command syntax: upload <file>")
@@ -46,7 +46,8 @@ class my_commands(commands.Cog):
         
     @commands.command(name = "download", brief = "Download file")
     async def download(self,ctx,*,args = None):
-        if not args:    await ctx.send("Command syntax: download <file>")
+        if not args:    
+            await ctx.send("Command syntax: download <file>")
         try:
             file_name = args.split(r"/")[-1]
             open(str(Path(os.getcwd()).parent) + os.path.sep + "file" + os.path.sep + file_name,"wb").write(requests.get(args).content)
@@ -110,7 +111,6 @@ class my_commands(commands.Cog):
     async def rmrole(self, ctx, member : discord.Member, role : discord.Role):  
         await member.remove_roles(role)
 
-
     @commands.command()
     @commands.has_role("mod")
     async def createrole(self, ctx, role):
@@ -123,6 +123,7 @@ class my_commands(commands.Cog):
 
     @commands.command()
     @commands.has_role("mod")
+<<<<<<< HEAD
     async def addpermission(self, ctx, role: discord.Role, single_permission):
         perms = Permissions()
         eval("perms.update(" + str(single_permission) +" = True)")
@@ -137,6 +138,10 @@ class my_commands(commands.Cog):
         eval("perms.update(" + str(single_permission) +" = False)")
         await role.edit(permissions = perms)
         await ctx.send("Permission table altered.")
+=======
+    async def setuprole(self, ctx, role: discord.Role):
+        await ctx.send("Work in progress...")
+>>>>>>> 2ad272aa0bc338840293cfea3b227dcc01a36edb
 
 def setup(client):
     client.add_cog(my_commands(client))
