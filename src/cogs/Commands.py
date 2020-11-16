@@ -123,7 +123,7 @@ class my_commands(commands.Cog):
 
     @commands.command()
     @commands.has_role("mod")
-<<<<<<< HEAD
+ 
     async def addpermission(self, ctx, role: discord.Role, single_permission):
         perms = Permissions()
         eval("perms.update(" + str(single_permission) +" = True)")
@@ -138,10 +138,7 @@ class my_commands(commands.Cog):
         eval("perms.update(" + str(single_permission) +" = False)")
         await role.edit(permissions = perms)
         await ctx.send("Permission table altered.")
-=======
-    async def setuprole(self, ctx, role: discord.Role):
-        await ctx.send("Work in progress...")
->>>>>>> 2ad272aa0bc338840293cfea3b227dcc01a36edb
+
 
 def setup(client):
     client.add_cog(my_commands(client))
