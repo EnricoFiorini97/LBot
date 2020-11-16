@@ -123,7 +123,6 @@ class my_commands(commands.Cog):
 
     @commands.command()
     @commands.has_role("mod")
- 
     async def addpermission(self, ctx, role: discord.Role, single_permission):
         perms = Permissions()
         eval("perms.update(" + str(single_permission) +" = True)")
