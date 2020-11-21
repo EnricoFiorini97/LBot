@@ -43,7 +43,9 @@ class my_events(commands.Cog):
     @tasks.loop(seconds = 6)
     async def change_status(self):
         await self.client.change_presence(activity = discord.Game(next(self.game_list)))
-        
+     
+
+         
 def setup(client):
     client.add_cog(my_events(client))
     

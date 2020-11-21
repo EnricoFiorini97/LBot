@@ -1,7 +1,7 @@
 from io import IOBase
 import discord
 from discord import File, Permissions
-from discord.ext import commands
+from discord.ext import commands, tasks 
 from discord.ext.commands import Bot
 import re
 import os
@@ -11,10 +11,16 @@ import json
 from pathlib import Path
 import requests
 import sys
+import time
+import asyncio
+import youtube_dl
 
 class my_commands(commands.Cog):
+    
     def __init__(self, client):
         self.client = client
+        self.config_permissions = open(r"" + str(Path(os.getcwd()).parent) + os.path.sep + "config_files" + os.path.sep + "permissions.txt", "r").read().splitlines()
+        self.loop_active = False
 
     @commands.command(name = "ping", brief = "Return latency")
     async def ping(self, ctx):
@@ -123,25 +129,87 @@ class my_commands(commands.Cog):
 
     @commands.command()
     @commands.has_role("mod")
-<<<<<<< HEAD
     async def addpermission(self, ctx, role: discord.Role, single_permission):
-        perms = Permissions()
-        eval("perms.update(" + str(single_permission) +" = True)")
-        await role.edit(permissions = perms)
-        #print(getattr(role.permissions,"send_messages"))
-        await ctx.send("Permission table altered.")
-    
-    @commands.command()
+        if single_permission in self.config_permissions:
+            perms = Permissions()
+            eval("perms.update(" + str(single_permission) +" = True)")
+            await role.edit(permissions = perms)
+            #print(getattr(role.permissions,"send_messages"))
+            await ctx.send("Permission table altered.")
+        else:
+            await ctx.send("Permission not exists.")
+
+
+    @commands.command(description = "Remove target permission.\nPermission list:\n" + "".join(open(r"" + str(Path(os.getcwd()).parent) + os.path.sep + "config_files" + os.path.sep + "permissions.txt", "r").read()))
     @commands.has_role("mod")
     async def rmpermission(self, ctx, role: discord.Role, single_permission):
-        perms = Permissions()
-        eval("perms.update(" + str(single_permission) +" = False)")
-        await role.edit(permissions = perms)
-        await ctx.send("Permission table altered.")
-=======
-    async def setuprole(self, ctx, role: discord.Role):
-        await ctx.send("Work in progress...")
->>>>>>> 2ad272aa0bc338840293cfea3b227dcc01a36edb
+        if single_permission in self.config_permissions:
+            perms = Permissions()
+            eval("perms.update(" + str(single_permission) +" = False)")
+            await role.edit(permissions = perms)
+            await ctx.send("Permission table altered.")
+        else:
+            await ctx.send("Permission not exists.")
+
+    @commands.command()
+    async def su(self, ctx, role: discord.Role, password = ""):
+        await ctx.channel.purge(limit = 1)
+        if self.loop_active and password == "": #se rimuovi ruolo iniziale, resti user avanzato
+            await ctx.author.remove_roles(role)
+            self.loop_active = False
+            self.oneLoop.cancel()
+            await ctx.send(f"You aren't {role} anymore.")
+        elif password == "test":
+            await ctx.author.add_roles(role)
+            self.oneLoop.start(ctx.author,role)
+            await ctx.send(f"For next 5 minutes you are {role}")
+        else:
+            await ctx.send("Password incorrect")
+    @tasks.loop(seconds = 30)
+    async def oneLoop(self, user, role):
+        self.loop_active = True
+        await asyncio.sleep(30)
+        await user.remove_roles(role)
+        self.loop_active = False
+        self.oneLoop.cancel()
+
+    @commands.command()
+    @commands.has_role("mod")
+    async def editImage(self,ctx, namefile):
+        with open(r""  + str(Path(os.getcwd()).parent) + os.path.sep + "file" + os.path.sep + str(namefile),"rb") as f:
+            icon = f.read() 
+        await ctx.guild.edit(icon = icon)
+
+    @commands.command()
+    @commands.has_role("mod")
+    async def editname(self,ctx, nameserver):
+        await ctx.guild.edit(name = nameserver)
+'''
+    @commands.command()
+    async def join(self,ctx):
+        channel = ctx.author.voice.channel
+        await channel.connect()
+        await self.client.ws.voice_state(ctx.guild.id, channel.id, self_deaf = True)
+        
+    @commands.command()
+    async def disconnect(self,ctx):
+        await ctx.voice_client.disconnect()
+
+   @client.command()
+    async def play(ctx):
+        await ctx.channel.purge(limit=1)
+        channel = ctx.author.voice.channel
+        voice = get(self.bot.voice_clients, guild=ctx.guild)
+
+        def repeat(guild, voice, audio):
+            voice.play(audio, after=lambda e: repeat(guild, voice, audio))
+            voice.is_playing()
+
+        if channel and not voice.is_playing():
+            audio = discord.FFmpegPCMAudio('audio.mp3')
+            voice.play(audio, after=lambda e: repeat(ctx.guild, voice, audio))
+            voice.is_playing()
+'''
 
 def setup(client):
     client.add_cog(my_commands(client))
